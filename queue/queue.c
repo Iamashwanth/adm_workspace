@@ -3,15 +3,7 @@
 #include <string.h>
 #include <stdbool.h>
 
-typedef struct listnode {
-	int elem;
-	struct listnode *next;
-} listnode;
-
-typedef struct {
-	listnode *head;
-	listnode *tail;
-} queue;
+#include "queue.h"
 
 void initQueue (queue *q) {
 	q->head = q->tail = NULL;
@@ -54,25 +46,4 @@ int dequeue (queue *q) {
 	free(node);
 
 	return elem;
-}
-
-int main() {
-	queue q;
-	int x;
-
-	initQueue(&q);
-
-	printf("Enter the numbers into queue\n");
-
-	while (scanf("%d", &x) != EOF) {
-		enqueue(&q, x);
-	}
-
-	printf("\n####\n");
-
-	while (!isEmpty(&q)) {
-		printf("%d ", dequeue(&q));
-	}
-
-	printf("\n");
 }
