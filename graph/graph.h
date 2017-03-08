@@ -3,6 +3,9 @@
 
 #define MAX_V 100
 
+#define WHITE 1
+#define BLACK 0
+
 typedef enum {
 	UNDISCOVERED,
 	DISCOVERED,
@@ -23,9 +26,15 @@ typedef struct {
 	int degree[MAX_V];
 } graph;
 
+extern edgestate *state;
+extern int *parent;
+extern int *color;
+
 void initGraph (graph *g, bool directed);
 void insertEdge (graph *g, int x, int y, int w, bool directed);
 void readGraph (graph *g);
 void printGraph (graph* g);
-void BFS (graph *g, int start);
+void initSearch(graph *g);
+void BFS (graph *g, int start, void (*processEdge)(int x, int y));
+void twoColor (graph *g, int start);
 #endif

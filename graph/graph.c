@@ -6,6 +6,10 @@
 #include "queue.h"
 #include "graph.h"
 
+edgestate *state = NULL;
+int *parent = NULL;
+int *color = NULL;
+
 void initGraph (graph *g, bool directed) {
 	int i ;
 	g->nvertices = 0;
@@ -65,14 +69,15 @@ void printGraph (graph* g) {
 	}
 }
 
-void BFS (graph *g, int start) {
-	int x, *parent;
-	edgenode *temp;
-	edgestate *state;
-	queue q;
-
+void initSearch (graph* g) {
 	state = (edgestate *) calloc(g->nvertices, sizeof(edgestate));
 	parent = (int *) calloc(g->nvertices, sizeof(int));
+}
+
+void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
+	int x;
+	edgenode *temp;
+	queue q;
 
 	state[start] = DISCOVERED;
 
@@ -81,6 +86,8 @@ void BFS (graph *g, int start) {
 
 	while (!isEmpty(&q)) {
 		x = dequeue(&q);
+
+		// Do preprocessing on the vertex
 		printf("Processing vertex %d\n", x);
 
 		temp = g->edges[x];
@@ -88,6 +95,13 @@ void BFS (graph *g, int start) {
 		while (temp != NULL) {
 			if (state[temp->y] == UNDISCOVERED) {
 				state[temp->y] = DISCOVERED;
+
+				if ((state[temp->y] != PROCESSED) || g->directed) {
+					if (processEdge != NULL) {
+						(*processEdge)(x, temp->y);
+					}
+				}
+
 				parent[temp->y] = x;
 				enqueue(&q , temp->y);
 			}
@@ -95,16 +109,31 @@ void BFS (graph *g, int start) {
 		}
 
 		state[x] = PROCESSED;
+		// Do postprocessing on the vertex
 	}
 }
 
-int main() {
-	int x;
-	graph g;
-	initGraph(&g, false);
-	readGraph(&g);
-	printGraph(&g);
-	printf("enter the first vertex to start transversal\n");
-	scanf("%d", &x);
-	BFS(&g, x);
+void complementColor (int x, int y) {
+	if (color[x] == WHITE) color[y] = BLACK;
+	else if (color[x] == BLACK) color[y] = WHITE;
+}
+
+void twoColor(graph *g, int start) {
+	int i;
+
+	color = (int *) calloc(g->nvertices, sizeof(int));
+
+	for (i = 0; i < g->nvertices; i++) {
+		color[i] = -1;
+	}
+
+	initSearch(g);
+	color[start] = WHITE;
+	BFS(g, start, complementColor);
+
+	printf("\n");
+	for (i = 0; i < g->nvertices; i++) {
+		printf("%d", color[i]);
+	}
+	printf("\n");
 }
