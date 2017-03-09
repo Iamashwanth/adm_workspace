@@ -37,4 +37,5 @@ void printGraph (graph* g);
 void initSearch(graph *g);
 void BFS (graph *g, int start, void (*processEdge)(int x, int y));
 void twoColor (graph *g, int start);
+void DFS (graph *g, int start);
 #endif

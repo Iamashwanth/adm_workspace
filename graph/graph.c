@@ -113,6 +113,25 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 	}
 }
 
+void DFS (graph *g, int start) {
+	edgenode *temp;
+	state[start] = DISCOVERED;
+	printf("%d\n", start);
+	temp = g->edges[start];
+
+	while (temp != NULL) {
+		//process edge
+		if (state[temp->y] == UNDISCOVERED) {
+			parent[temp->y] = start;
+			DFS(g, temp->y);
+		}
+
+		temp = temp->next;
+	}
+
+	state[start] = PROCESSED;
+}
+
 void complementColor (int x, int y) {
 	if (color[x] == WHITE) color[y] = BLACK;
 	else if (color[x] == BLACK) color[y] = WHITE;
