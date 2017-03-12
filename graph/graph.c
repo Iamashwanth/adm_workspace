@@ -9,6 +9,9 @@
 edgestate *state = NULL;
 int *parent = NULL;
 int *color = NULL;
+int *entry_time = NULL;
+int *exit_time = NULL;
+int time;
 
 void initGraph (graph *g, bool directed) {
 	int i ;
@@ -74,6 +77,11 @@ void initSearch (graph* g) {
 	parent = (int *) calloc(g->nvertices, sizeof(int));
 }
 
+void initTime (graph* g) {
+	entry_time = (int *) calloc(g->nvertices, sizeof(int));
+	exit_time = (int *) calloc(g->nvertices, sizeof(int));
+}
+
 void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 	int x;
 	edgenode *temp;
@@ -93,14 +101,13 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 		temp = g->edges[x];
 
 		while (temp != NULL) {
+			if ((state[temp->y] != PROCESSED) || g->directed) {
+				if (processEdge != NULL) {
+					(*processEdge)(x, temp->y);
+				}
+			}
 			if (state[temp->y] == UNDISCOVERED) {
 				state[temp->y] = DISCOVERED;
-
-				if ((state[temp->y] != PROCESSED) || g->directed) {
-					if (processEdge != NULL) {
-						(*processEdge)(x, temp->y);
-					}
-				}
 
 				parent[temp->y] = x;
 				enqueue(&q , temp->y);
@@ -113,22 +120,30 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 	}
 }
 
-void DFS (graph *g, int start) {
+void DFS (graph *g, int start, void (*processTreeEdge)(int x, int y), void (*processBackEdge)(int x, int y)) {
 	edgenode *temp;
 	state[start] = DISCOVERED;
 	printf("%d\n", start);
 	temp = g->edges[start];
 
+	entry_time[start] = ++time;
+
 	while (temp != NULL) {
-		//process edge
 		if (state[temp->y] == UNDISCOVERED) {
 			parent[temp->y] = start;
-			DFS(g, temp->y);
+			if (processTreeEdge != NULL) {
+				(*processTreeEdge)(start, temp->y);
+			}
+			DFS(g, temp->y, processTreeEdge, processBackEdge);
+		} else if ((state[temp->y] != PROCESSED) || g->directed) {
+			if (processBackEdge != NULL) {
+				(*processBackEdge)(start, temp->y);
+			}
 		}
-
 		temp = temp->next;
 	}
 
+	exit_time[start] = ++time;
 	state[start] = PROCESSED;
 }
 
@@ -155,4 +170,15 @@ void twoColor(graph *g, int start) {
 		printf("%d", color[i]);
 	}
 	printf("\n");
+}
+
+void printEdge (int x, int y) {
+	printf("Edge %d to %d\n", x, y);
+}
+
+void checkBackEdge (int x, int y) {
+	printEdge(x, y);
+	if (parent[x] != y) {
+		printf("Found cycle from %d to %d\n", x, y);
+	}
 }
