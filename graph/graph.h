@@ -12,6 +12,12 @@ typedef enum {
 	PROCESSED
 } edgestate;
 
+typedef enum {
+	TREE,
+	BACK,
+	CLASS_MAX
+} edgeclass;
+
 typedef struct edgenode {
 	int y;
 	int weight;
@@ -40,7 +46,8 @@ void initSearch(graph *g);
 void initTime(graph *g);
 void BFS (graph *g, int start, void (*processEdge)(int x, int y));
 void twoColor (graph *g, int start);
-void DFS (graph *g, int start, void (*processTreeEdge)(int x, int y), void (*processBackEdge)(int x, int y));
+void DFS (graph *g, int start, void (*processVertexEarly)(int x), void (*processVertexLate)(int x), void (*processEdge)(int x, int y));
 void checkBackEdge (int x, int y);
 void printEdge (int x, int y);
+edgeclass edgeClassify (int x, int y);
 #endif

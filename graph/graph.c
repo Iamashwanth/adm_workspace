@@ -120,27 +120,34 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 	}
 }
 
-void DFS (graph *g, int start, void (*processTreeEdge)(int x, int y), void (*processBackEdge)(int x, int y)) {
+void DFS (graph *g, int start, void (*processVertexEarly)(int x), void (*processVertexLate)(int x), void (*processEdge)(int x, int y)) {
 	edgenode *temp;
 	state[start] = DISCOVERED;
 	printf("%d\n", start);
 	temp = g->edges[start];
 
 	entry_time[start] = ++time;
+	if (processVertexEarly) {
+		processVertexEarly(start);
+	}
 
 	while (temp != NULL) {
 		if (state[temp->y] == UNDISCOVERED) {
 			parent[temp->y] = start;
-			if (processTreeEdge != NULL) {
-				(*processTreeEdge)(start, temp->y);
+			if (processEdge) {
+				(*processEdge)(start, temp->y);
 			}
-			DFS(g, temp->y, processTreeEdge, processBackEdge);
+			DFS(g, temp->y, processVertexEarly, processVertexLate, processEdge);
 		} else if ((state[temp->y] != PROCESSED) || g->directed) {
-			if (processBackEdge != NULL) {
-				(*processBackEdge)(start, temp->y);
+			if (processEdge) {
+				(*processEdge)(start, temp->y);
 			}
 		}
 		temp = temp->next;
+	}
+
+	if (processVertexLate) {
+		processVertexLate(start);
 	}
 
 	exit_time[start] = ++time;
@@ -170,6 +177,17 @@ void twoColor(graph *g, int start) {
 		printf("%d", color[i]);
 	}
 	printf("\n");
+}
+
+edgeclass edgeClassify (int x, int y) {
+	if (parent[y] == x) {
+		return TREE;
+	} else if (parent[x] == y) {
+		return CLASS_MAX;
+	} else if (state[y] == DISCOVERED) {
+		return BACK;
+	}
+	return CLASS_MAX;
 }
 
 void printEdge (int x, int y) {

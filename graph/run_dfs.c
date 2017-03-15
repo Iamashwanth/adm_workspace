@@ -3,6 +3,7 @@
 #include <stdbool.h>
 
 #include "graph.h"
+#include "articulation.h"
 
 int main() {
 	int x, i;
@@ -14,7 +15,9 @@ int main() {
 	scanf("%d", &x);
 	initSearch(&g);
 	initTime(&g);
-	DFS(&g, x, printEdge, checkBackEdge);
+	initArticulation(&g);
+	parent[x] = -1;
+	DFS(&g, x, initAncestor, processAncestor, UpdateAncestor);
 	for (i = 0; i < g.nvertices; i++) {
 		printf("%d: %d %d\n", i, entry_time[i], exit_time[i]);
 	}
