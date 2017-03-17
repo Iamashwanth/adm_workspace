@@ -1,7 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+
 #include "graph.h"
+#include "articulation.h"
 
 int *reachable_ancestor = NULL;
 int *child = NULL;

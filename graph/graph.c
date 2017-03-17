@@ -96,7 +96,6 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 		x = dequeue(&q);
 
 		// Do preprocessing on the vertex
-		printf("Processing vertex %d\n", x);
 
 		temp = g->edges[x];
 
@@ -123,7 +122,6 @@ void BFS (graph *g, int start, void (*processEdge)(int x, int y)) {
 void DFS (graph *g, int start, void (*processVertexEarly)(int x), void (*processVertexLate)(int x), void (*processEdge)(int x, int y)) {
 	edgenode *temp;
 	state[start] = DISCOVERED;
-	printf("%d\n", start);
 	temp = g->edges[start];
 
 	entry_time[start] = ++time;
