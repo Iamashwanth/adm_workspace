@@ -184,6 +184,10 @@ edgeclass edgeClassify (int x, int y) {
 		return CLASS_MAX;
 	} else if (state[y] == DISCOVERED) {
 		return BACK;
+	} else if(state[y] == PROCESSED && entry_time[y] > entry_time[x]) {
+		return FORWARD;
+	} else if(state[y] == PROCESSED && entry_time[y] < entry_time[x]) {
+		return CROSS;
 	}
 	return CLASS_MAX;
 }

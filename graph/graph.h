@@ -15,6 +15,8 @@ typedef enum {
 typedef enum {
 	TREE,
 	BACK,
+	FORWARD,
+	CROSS,
 	CLASS_MAX
 } edgeclass;
 
