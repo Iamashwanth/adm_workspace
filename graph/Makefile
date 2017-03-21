@@ -1,4 +1,4 @@
-all: run_bfs run_dfs run_topologicalsort run_scc
+all: run_bfs run_dfs run_topologicalsort run_scc prim
 
 run_scc: run_scc.o scc.o graph.o stack.o queue.o
 	gcc run_scc.o graph.o queue.o stack.o scc.o -o run_scc
@@ -12,6 +12,9 @@ run_bfs: run_bfs.o graph.o queue.o
 run_dfs: run_dfs.o graph.o queue.o articulation.o
 	gcc run_dfs.o graph.o queue.o articulation.o -o run_dfs
 
+prim: prim.o graph.o queue.o
+	gcc prim.o graph.o queue.o -o prim
+
 run_topologicalsort.o:
 	gcc -I ./ -c run_topologicalsort.c
 
@@ -23,6 +26,9 @@ run_dfs.o:
 
 scc.o:
 	gcc -I ../stack -c scc.c
+
+prim.o:
+	gcc -I ./ -c prim.c
 
 topologicalsort.o:
 	gcc -I ./ -c topologicalsort.c
@@ -40,4 +46,4 @@ stack.o:
 	gcc -I ../stack -c ../stack/stack.c
 
 clean:
-	rm *o run_bfs run_dfs run_topologicalsort run_scc
+	rm *o run_bfs run_dfs run_topologicalsort run_scc prim
