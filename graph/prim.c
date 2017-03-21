@@ -1,3 +1,11 @@
+/*
+ * Prim's Algorithm for minimum spanning trees.
+ * start with an arbitrary vertex
+ * Go throguh the neighbour list and update the distaces to each non-tree vertex.
+ * Add the edge with the min distance.
+ */
+
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
