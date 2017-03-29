@@ -1,16 +1,9 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
+
+#include "priority_queue.h"
 
 #define ARR_MAX 100
-
-typedef struct {
-	void *unsorted_arr[ARR_MAX];
-	int min_idx;
-	int n;
-	int (*compare)(void *x, void *y);
-} prio_q;
 
 void init_prio_q (prio_q *pq, int (*compare)(void *x, void *y)) {
 	pq->min_idx = -1;
@@ -51,30 +44,4 @@ void delete_min (prio_q *pq) {
 	}
 
 	pq->min_idx = min_idx;
-}
-
-int compare_int (void *x, void *y) {
-	return (*((int*)x) - *((int*)y));
-}
-
-void main() {
-	prio_q pq;
-	init_prio_q(&pq, compare_int);
-	int *x;
-	x = (int *) malloc(sizeof(int));
-	*x = 2;
-	insert_elem(&pq, x);
-	printf("%d\n", *((int *)(find_min(&pq))));
-	x = (int *) malloc(sizeof(int));
-	*x = 1;
-	insert_elem(&pq, x);
-	printf("%d\n", *((int *)(find_min(&pq))));
-	x = (int *) malloc(sizeof(int));
-	*x = 3;
-	insert_elem(&pq, x);
-	printf("%d\n", *((int *)(find_min(&pq))));
-	delete_min(&pq);
-	printf("%d\n", *((int *)(find_min(&pq))));
-	delete_min(&pq);
-	printf("%d\n", *((int *)(find_min(&pq))));
 }
